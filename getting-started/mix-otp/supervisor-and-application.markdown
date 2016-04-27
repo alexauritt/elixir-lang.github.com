@@ -244,7 +244,7 @@ In other words, we want the registry to keep on running even if a bucket crashes
   end
 ```
 
-The test is similar to "removes bucket on exit" except that we are being a bit more harsh by sending `:shutdown` as the exit reason instead of `:normal`. Opposite to `Agent.stop/1`, `Process.exit/2` is an asynchronous operation, therefore we cannot simply query `KV.Registry.lookup/2` right after sending the exit signal because there will be no guarantee the bucket will be dead by then. To solve this, we also monitor the bucket during test and only query the registry once we are sure it is DOWN, avoiding race conditions.
+The test is similar to "removes bucket on exit" except that we are being harsher by sending `:shutdown` as the exit reason instead of `:normal`. Unlike `Agent.stop/1`, `Process.exit/2` is an asynchronous operation, therefore we cannot simply query `KV.Registry.lookup/2` right after sending the exit signal because there will be no guarantee the bucket will be dead by then. To solve this, we also monitor the bucket during test and only query the registry once we are sure it is DOWN, avoiding race conditions.
 
 Since the bucket is linked to the registry, which is then linked to the test process, killing the bucket causes the registry to crash which then causes the test process to crash too:
 
